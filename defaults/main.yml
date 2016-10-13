@@ -1,0 +1,4 @@
+---
+jenkins_port: 8081
+jenkins_home: /var/lib/jenkins
+jenkins_jar_location: /opt/jenkins-cli.jar
