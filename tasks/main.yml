@@ -31,7 +31,7 @@
 # service
 - name: Ensure jenkins is started and enabled to start at boot.
   service: name=jenkins state=started enabled=yes
-  
+
 # cli
 - name: Get the jenkins-cli jarfile from the Jenkins server.
   get_url:
@@ -64,3 +64,13 @@
     group: jenkins
     mode: 0755
   when: jenkins_plugins_folder_create.changed
+
+- name: Install default Jenkins plugins.
+  shell: java -jar {{ jenkins_jar_location }} -s http://localhost:{{ jenkins_port }} install-plugin {{ item }}
+  register: result
+  changed_when: False
+  with_items: "{{ jenkins_default_plugins }}"
+
+# - name: Make sure the plugin is always up-to-date
+#   jenkins_plugin: name={{ item }} state=latest url={{ jenkins_server_url }} jenkins_home={{ jenkins_home }}
+#   with_items: "{{ jenkins_default_plugins }}"
