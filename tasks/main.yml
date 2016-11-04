@@ -12,10 +12,6 @@
 - name: Ensure jenkins is installed.
   yum: name=jenkins enablerepo=jenkins state=installed
 
-# service
-- name: Ensure jenkins is started and enabled to start at boot.
-  service: name=jenkins state=started enabled=yes
-
 # configure
 - name: Set HTTP port in Jenkins config.
   lineinfile:
@@ -32,6 +28,10 @@
     line: 'JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
   notify: restart jenkins
 
+# service
+- name: Ensure jenkins is started and enabled to start at boot.
+  service: name=jenkins state=started enabled=yes
+  
 # cli
 - name: Get the jenkins-cli jarfile from the Jenkins server.
   get_url:
