@@ -44,12 +44,7 @@
 
 # plugin
 - name: Create Jenkins updates folder.
-  file:
-    path: "{{ jenkins_home }}/updates"
-    owner: jenkins
-    group: jenkins
-    mode: 0755
-    state: directory
+  file: path={{ jenkins_home }}/updates owner={{ jenkins_user }} group={{ jenkins_user }} state=directory
   register: jenkins_plugins_folder_create
 
 - name: Update Jenkins plugin data.
@@ -58,11 +53,7 @@
     creates: "{{ jenkins_home }}/updates/default.json"
 
 - name: Permissions for default.json updates info.
-  file:
-    path: "{{ jenkins_home }}/updates/default.json"
-    owner: jenkins
-    group: jenkins
-    mode: 0755
+  file: path={{ jenkins_home }}/updates/default.json owner={{ jenkins_user }} group={{ jenkins_user }}
   when: jenkins_plugins_folder_create.changed
 
 - name: jenkins | Get installed plugins.
@@ -76,7 +67,7 @@
   changed_when: '"{{ item }}" not in plugin_list.stdout'
   with_items: "{{ jenkins_default_plugins }}"
   notify: restart jenkins
-  
+
 # - name: Make sure the plugin is always up-to-date
 #   jenkins_plugin: name={{ item }} state=latest url={{ jenkins_server_url }} jenkins_home={{ jenkins_home }}
 #   with_items: "{{ jenkins_default_plugins }}"

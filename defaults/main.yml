@@ -1,6 +1,7 @@
 ---
+jenkins_user: jenkins
 jenkins_port: 8081
-jenkins_home: /var/lib/jenkins
+jenkins_home: /var/lib/{{ jenkins_user }}
 jenkins_jar_location: /opt/jenkins-cli.jar
 jenkins_server_url: "http://localhost:{{ jenkins_port }}"
 jenkins_default_plugins:
