@@ -4,20 +4,8 @@
   static: no
 
 # configure
-- name: Set HTTP port in Jenkins config.
-  lineinfile:
-    backrefs: yes
-    dest: /etc/sysconfig/jenkins
-    regexp: '^JENKINS_PORT='
-    line: 'JENKINS_PORT={{ jenkins_port }}'
-  notify: restart jenkins
-
-- name: Jenkins - configure | Turn off Jenkins setup wizard
-  lineinfile:
-    dest: /etc/sysconfig/jenkins
-    regexp: '^JENKINS_JAVA_OPTIONS='
-    line: 'JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
-  notify: restart jenkins
+- include: configure-{{ ansible_os_family }}.yml
+  static: no
 
 # service
 - name: Ensure jenkins is started and enabled to start at boot.
@@ -36,6 +24,6 @@
   when: ansible_connection != 'docker'
 
 # plugin
-- include: configure-plugins.yml
+- include: manage-plugins.yml
   static: no
   when: ansible_connection != 'docker'
