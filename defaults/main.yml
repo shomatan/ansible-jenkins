@@ -1,5 +1,6 @@
 ---
 jenkins_user: jenkins
+jenkins_group: jenkins
 jenkins_port: 8081
 jenkins_home: /var/lib/{{ jenkins_user }}
 jenkins_jar_location: /opt/jenkins-cli.jar

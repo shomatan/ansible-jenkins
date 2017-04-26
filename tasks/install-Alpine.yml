@@ -1,0 +1,22 @@
+---
+- name: Define jenkins version.
+  set_fact: jenkins_version=2.46.2
+
+- name: Add jenkins group.
+  group:  
+    name: "{{ jenkins_group }}"
+    state: present
+
+- name: Add jenkins user.
+  user:
+    name: "{{ jenkins_user }}"
+    home: "{{ jenkins_home }}"
+    uid: 1000
+    gid: 1000
+    shell: /bin/bash
+    group: "{{ jenkins_group }}"
+
+- name: Download jenkins.war
+  get_url:
+    url: https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/{{ jenkins_version }}/jenkins-war-{{ jenkins_version }}.war
+    dest: /usr/share/jenkins/jenkins.war

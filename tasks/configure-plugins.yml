@@ -3,7 +3,7 @@
   file:
     path: "{{ jenkins_home }}/updates"
     owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
     state: directory
   register: jenkins_plugins_folder_create
 
@@ -16,7 +16,7 @@
   file:
     path: "{{ jenkins_home }}/updates/default.json"
     owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
   when: jenkins_plugins_folder_create.changed
 
 - name: jenkins | Get installed plugins.
