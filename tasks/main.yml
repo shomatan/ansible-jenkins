@@ -10,7 +10,10 @@
     enabled: no
 
 - name: Ensure jenkins is installed.
-  yum: name=jenkins enablerepo=jenkins state=installed
+  yum:
+    name: jenkins
+    enablerepo: jenkins
+    state: installed
 
 # configure
 - name: Set HTTP port in Jenkins config.
@@ -44,7 +47,11 @@
 
 # plugin
 - name: Create Jenkins updates folder.
-  file: path={{ jenkins_home }}/updates owner={{ jenkins_user }} group={{ jenkins_user }} state=directory
+  file:
+    path: "{{ jenkins_home }}/updates"
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_user }}"
+    state: directory
   register: jenkins_plugins_folder_create
 
 - name: Update Jenkins plugin data.
@@ -53,7 +60,10 @@
     creates: "{{ jenkins_home }}/updates/default.json"
 
 - name: Permissions for default.json updates info.
-  file: path={{ jenkins_home }}/updates/default.json owner={{ jenkins_user }} group={{ jenkins_user }}
+  file:
+    path: "{{ jenkins_home }}/updates/default.json"
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_user }}"
   when: jenkins_plugins_folder_create.changed
 
 - name: jenkins | Get installed plugins.
