@@ -1,19 +1,7 @@
 ---
 # install
-- name: Add jenkins repository.
-  yum_repository:
-    name: jenkins
-    description: Jenkins
-    baseurl: http://pkg.jenkins.io/redhat
-    gpgkey: http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
-    gpgcheck: yes
-    enabled: no
-
-- name: Ensure jenkins is installed.
-  yum:
-    name: jenkins
-    enablerepo: jenkins
-    state: installed
+- include: install-{{ ansible_os_family }}.yml
+  static: no
 
 # configure
 - name: Set HTTP port in Jenkins config.
@@ -45,40 +33,9 @@
   until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
   retries: 5
   delay: 10
+  when: ansible_connection != 'docker'
 
 # plugin
-- name: Create Jenkins updates folder.
-  file:
-    path: "{{ jenkins_home }}/updates"
-    owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
-    state: directory
-  register: jenkins_plugins_folder_create
-
-- name: Update Jenkins plugin data.
-  shell: curl -L https://updates.jenkins-ci.org/update-center.json | sed '1d;$d' > "{{ jenkins_home }}/updates/default.json"
-  args:
-    creates: "{{ jenkins_home }}/updates/default.json"
-
-- name: Permissions for default.json updates info.
-  file:
-    path: "{{ jenkins_home }}/updates/default.json"
-    owner: "{{ jenkins_user }}"
-    group: "{{ jenkins_user }}"
-  when: jenkins_plugins_folder_create.changed
-
-- name: jenkins | Get installed plugins.
-  shell: java -jar {{ jenkins_jar_location }} -s http://localhost:{{ jenkins_port }} list-plugins
-  register: plugin_list
-  changed_when: False
-
-- name: Install default Jenkins plugins.
-  shell: java -jar {{ jenkins_jar_location }} -s http://localhost:{{ jenkins_port }} install-plugin {{ item }}
-  register: result
-  changed_when: '"{{ item }}" not in plugin_list.stdout'
-  with_items: "{{ jenkins_default_plugins }}"
-  notify: restart jenkins
-
-# - name: Make sure the plugin is always up-to-date
-#   jenkins_plugin: name={{ item }} state=latest url={{ jenkins_server_url }} jenkins_home={{ jenkins_home }}
-#   with_items: "{{ jenkins_default_plugins }}"
+- include: configure-plugins.yml
+  static: no
+  when: ansible_connection != 'docker'
