@@ -34,7 +34,8 @@
 # service
 - name: Ensure jenkins is started and enabled to start at boot.
   service: name=jenkins state=started enabled=yes
-
+  when: ansible_connection != 'docker'
+  
 # cli
 - name: Get the jenkins-cli jarfile from the Jenkins server.
   get_url:
