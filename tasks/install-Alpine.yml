@@ -1,4 +1,12 @@
 ---
+- name: Install dumb init.
+  apk:
+    name: dumb-init
+
+- name: Install ttf-dejavu
+  apk:
+    name: ttf-dejavu
+
 - name: Define jenkins version.
   set_fact: jenkins_version=2.46.2
 
