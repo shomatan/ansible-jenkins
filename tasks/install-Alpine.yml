@@ -30,3 +30,9 @@
   get_url:
     url: https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/{{ jenkins_version }}/jenkins-war-{{ jenkins_version }}.war
     dest: /usr/share/jenkins/jenkins.war
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"    
+
+- name: Purge apk cache.
+  command: rm -rf /var/cache/apk/*
+  when: ansible_connection == 'docker'    

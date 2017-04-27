@@ -13,3 +13,7 @@
     name: jenkins
     enablerepo: jenkins
     state: installed
+
+- name: Purge yum cache.
+  command: yum clean all
+  when: ansible_connection == 'docker'    
